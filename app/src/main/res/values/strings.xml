@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ArcTouchChallenge</string>
+    <string name="no_upcoming_movies">Looks like there is no upcoming movies</string>
 </resources>

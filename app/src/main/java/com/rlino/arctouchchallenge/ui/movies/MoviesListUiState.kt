@@ -8,12 +8,12 @@ import com.rlino.arctouchchallenge.ui.model.Movie
 data class MoviesListUiState(
         val movies: List<Movie>,
         val requestInProgress: Boolean,
-        val requestSuccess: Boolean,
-        val errorMessage: String
+        val errorMessage: String,
+        val loadingMore: Boolean
 ) {
     companion object {
         fun init(): MoviesListUiState {
-            return MoviesListUiState(emptyList(), false, false, "")
+            return MoviesListUiState(emptyList(), false, "", false)
         }
     }
 

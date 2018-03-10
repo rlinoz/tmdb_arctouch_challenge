@@ -7,7 +7,7 @@ import com.rlino.arctouchchallenge.repository.dto.response.MovieDTO
  */
 sealed class UpcomingMoviesStatus {
 
-    object InProgress: UpcomingMoviesStatus()
+    class InProgress(): UpcomingMoviesStatus()
     class Error(val code: Int, val message: String): UpcomingMoviesStatus()
     class Success(val movies: List<MovieDTO>): UpcomingMoviesStatus()
 

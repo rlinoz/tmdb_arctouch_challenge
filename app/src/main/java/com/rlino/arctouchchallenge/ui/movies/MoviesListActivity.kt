@@ -4,7 +4,14 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.widget.LinearLayout
+import com.rlino.arctouchchallenge.R
 import com.rlino.arctouchchallenge.ui.model.Movie
+import kotlinx.android.synthetic.main.activity_main_empty.*
+import kotlinx.android.synthetic.main.activity_movies_list.*
 
 /**
  * Created by Lino on 3/7/2018.
@@ -15,8 +22,17 @@ class MoviesListActivity : AppCompatActivity() {
         ViewModelProviders.of(this).get(MoviesListViewModel::class.java)
     }
 
+    private val moviesListAdapter = MoviesListAdapter()
+    private val layoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_movies_list)
+
+        initMoviesListView()
 
         viewModel.moviesListLiveData.observe(this, Observer {
             it?.let { render(it) }
@@ -25,17 +41,30 @@ class MoviesListActivity : AppCompatActivity() {
         viewModel.retrieveMovies()
     }
 
+    private fun initMoviesListView() {
+        moviesListView.adapter = moviesListAdapter
+        moviesListView.layoutManager = layoutManager
+        refreshLayout.setOnRefreshListener {
+            viewModel.retrieveMovies()
+        }
+
+        moviesListView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val itemsCount = layoutManager.itemCount
+                val lastVisibleItemPos = layoutManager.findLastVisibleItemPosition()
+                val loading = viewModel.moviesListLiveData.value?.loadingMore ?: false
+                if (!loading && itemsCount == (lastVisibleItemPos + 5)) {
+                    viewModel.loadMore()
+                }
+            }
+        })
+    }
+
     private fun render(state: MoviesListUiState) {
         when(state.requestInProgress) {
             true -> showLoading()
             false -> hideLoading()
-        }
-
-        when(state.requestSuccess) {
-            true -> {
-                hideLoading()
-                hideError()
-            }
         }
 
         when {
@@ -47,29 +76,44 @@ class MoviesListActivity : AppCompatActivity() {
             state.movies.isEmpty() -> showEmptyView()
             state.movies.isNotEmpty() -> showMoviesList(state.movies)
         }
+
+        when(state.loadingMore) {
+            true -> showLoadingMore()
+            false -> hideLoadingMore()
+        }
+    }
+
+    private fun hideLoadingMore() {
+
+    }
+
+    private fun showLoadingMore() {
+
     }
 
     private fun showMoviesList(movies: List<Movie>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        emptyLayout.visibility = View.GONE
+        moviesListView.visibility = View.VISIBLE
+        moviesListAdapter.movies = movies
     }
 
     private fun showEmptyView() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        emptyLayout.visibility = View.VISIBLE
     }
 
     private fun showError(errorMessage: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     private fun hideError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     private fun hideLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        refreshLayout.isRefreshing = false
     }
 
     private fun showLoading() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        refreshLayout.isRefreshing = true
     }
 }
