@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 /**
@@ -16,3 +17,6 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int): View =
 
 fun ImageView.loadUrl(url: String) =
     Picasso.with(context).load(url).into(this)
+
+fun ImageView.loadUrl(url: String, callback: Callback) =
+        Picasso.with(context).load(url).into(this, callback)

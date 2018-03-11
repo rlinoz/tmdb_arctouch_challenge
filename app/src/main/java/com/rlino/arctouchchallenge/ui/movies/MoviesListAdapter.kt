@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import com.rlino.arctouchchallenge.R
 import com.rlino.arctouchchallenge.ui.extesions.inflate
 import com.rlino.arctouchchallenge.ui.model.Movie
-import com.rlino.arctouchchallenge.ui.moviedetail.MovieDetailActivity
 import kotlin.properties.Delegates
+
 
 /**
  * Created by Lino on 3/8/2018.
  */
-class MoviesListAdapter : RecyclerView.Adapter<MovieViewHolder>() {
+class MoviesListAdapter(private val onItemClickListener: OnItemClickListener) : RecyclerView.Adapter<MovieViewHolder>() {
 
     var movies: List<Movie> by Delegates.observable(emptyList()) {
         prop, old, new ->
@@ -27,8 +27,7 @@ class MoviesListAdapter : RecyclerView.Adapter<MovieViewHolder>() {
         vh.itemView.setOnClickListener {
             val pos = vh.adapterPosition
             if(pos != POSITION_NONE) {
-                vh.itemView.context
-                        .startActivity(MovieDetailActivity.newIntent(vh.itemView.context, movies[pos]))
+                onItemClickListener.onClick(movies[pos])
             }
         }
 
@@ -43,4 +42,7 @@ class MoviesListAdapter : RecyclerView.Adapter<MovieViewHolder>() {
         holder.bind(movies[position])
     }
 
+    interface OnItemClickListener {
+        fun onClick(movie: Movie)
+    }
 }

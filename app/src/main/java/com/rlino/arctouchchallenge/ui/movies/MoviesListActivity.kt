@@ -7,22 +7,25 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.LinearLayout
 import com.rlino.arctouchchallenge.R
 import com.rlino.arctouchchallenge.ui.model.Movie
+import com.rlino.arctouchchallenge.ui.moviedetail.MovieDetailActivity
 import kotlinx.android.synthetic.main.activity_main_empty.*
 import kotlinx.android.synthetic.main.activity_movies_list.*
 
 /**
  * Created by Lino on 3/7/2018.
  */
-class MoviesListActivity : AppCompatActivity() {
+class MoviesListActivity : AppCompatActivity(), MoviesListAdapter.OnItemClickListener {
 
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(MoviesListViewModel::class.java)
     }
 
-    private val moviesListAdapter = MoviesListAdapter()
+    private val moviesListAdapter: MoviesListAdapter by lazy {
+        MoviesListAdapter(this)
+    }
+
     private val layoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(this)
     }
@@ -115,5 +118,9 @@ class MoviesListActivity : AppCompatActivity() {
 
     private fun showLoading() {
         refreshLayout.isRefreshing = true
+    }
+
+    override fun onClick(movie: Movie) {
+        MovieDetailActivity.start(this, movie)
     }
 }
