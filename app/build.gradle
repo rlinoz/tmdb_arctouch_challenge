@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply from: 'api_keys.gradle'
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -19,6 +21,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    applicationVariants.all {variant ->
+        variant.buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/\""
+        variant.buildConfigField "String", "API_KEY", tmdb_key
     }
 }
 

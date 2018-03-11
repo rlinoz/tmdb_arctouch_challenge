@@ -3,16 +3,13 @@ package com.rlino.arctouchchallenge.ui.moviedetail
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
 import android.view.MenuItem
-import android.view.View
 import com.rlino.arctouchchallenge.R
 import com.rlino.arctouchchallenge.ui.extesions.loadUrl
+import com.rlino.arctouchchallenge.ui.extesions.toFormattedString
 import com.rlino.arctouchchallenge.ui.model.Movie
 import com.squareup.picasso.Callback
 import kotlinx.android.synthetic.main.activity_movie_detail.*
@@ -66,8 +63,8 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun render() {
         name.text = movie.title
-        genre.text = movie.genre
-        releaseDate.text = movie.releaseDate
+        genre.text = movie.getGenreNames()
+        releaseDate.text = movie.releaseDate.toFormattedString()
         image.loadUrl("https://image.tmdb.org/t/p/w92/${movie.posterPath}")
         movieBackDrop.loadUrl("https://image.tmdb.org/t/p/w780/${movie.backDropPath}", object: Callback {
             override fun onSuccess() {

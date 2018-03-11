@@ -21,9 +21,9 @@ class MoviesListAdapter(private val onItemClickListener: OnItemClickListener) : 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val movieItemView = parent.inflate(R.layout.movie_vh)
+        val itemView = parent.inflate(viewType)
 
-        val vh = MovieViewHolder(movieItemView)
+        val vh = MovieViewHolder(itemView)
         vh.itemView.setOnClickListener {
             val pos = vh.adapterPosition
             if(pos != POSITION_NONE) {
@@ -32,6 +32,10 @@ class MoviesListAdapter(private val onItemClickListener: OnItemClickListener) : 
         }
 
         return vh
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return R.layout.movie_vh
     }
 
     override fun getItemCount(): Int {

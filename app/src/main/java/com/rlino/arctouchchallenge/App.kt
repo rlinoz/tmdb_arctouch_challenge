@@ -1,6 +1,7 @@
 package com.rlino.arctouchchallenge
 
 import android.app.Application
+import android.os.Debug
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 
@@ -17,8 +18,10 @@ class App : Application() {
         val builder = Picasso.Builder(this)
         builder.downloader(OkHttp3Downloader(this, 1024 * 10))
         val built = builder.build()
-        built.setIndicatorsEnabled(true)
-        built.isLoggingEnabled = true
+        if(BuildConfig.DEBUG) {
+            built.setIndicatorsEnabled(true)
+            built.isLoggingEnabled = true
+        }
         Picasso.setSingletonInstance(built)
     }
 }

@@ -12,7 +12,7 @@ data class Movie(
     val id: Int,
     val posterPath: String ,
     val overview: String,
-    val releaseDate: String,
+    val releaseDate: Date,
     val originalTitle: String,
     val originalLanguage: String,
     val title: String,
@@ -20,10 +20,17 @@ data class Movie(
     val popularity: Float,
     val voteCount: Int,
     val voteAverage: Float,
-    val genre: String
+    val genres: List<Genre>
 ) : Parcelable {
     companion object {
         val EXTRA_ARG = "movieextraarg"
     }
 
+    fun getGenreNames(): String {
+        return genres.fold(""){ acc, genre ->
+            if(acc.isEmpty())
+                return genre.name
+            "$genre.name, $acc"
+        }
+    }
 }

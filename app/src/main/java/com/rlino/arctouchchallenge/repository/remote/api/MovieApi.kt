@@ -1,5 +1,6 @@
 package com.rlino.arctouchchallenge.repository.remote.api
 
+import com.rlino.arctouchchallenge.repository.dto.response.GenreResponse
 import com.rlino.arctouchchallenge.repository.dto.response.MovieResponse
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -14,5 +15,8 @@ interface MovieApi {
     fun fetchUpcomingMovies(
             @Query("page") page: Int
     ): Observable<MovieResponse>
+
+    @GET("genre/movie/list")
+    fun fetchGenres(): Observable<GenreResponse>
 
 }

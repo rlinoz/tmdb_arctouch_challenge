@@ -4,6 +4,8 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.rlino.arctouchchallenge.manager.MoviesManager
 import com.rlino.arctouchchallenge.manager.status.UpcomingMoviesStatus
+import com.rlino.arctouchchallenge.ui.model.Movie
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -32,7 +34,7 @@ class MoviesListViewModel : ViewModel() {
                         when(upcomingMovieStatus) {
                             is UpcomingMoviesStatus.Success ->
                                 currentState.copy(
-                                        movies = upcomingMovieStatus.movies.map { return@map it.toModel() },
+                                        movies = upcomingMovieStatus.movies,
                                         requestInProgress = false,
                                         errorMessage = ""
                                 )
@@ -51,17 +53,18 @@ class MoviesListViewModel : ViewModel() {
                 })
     }
 
-    fun loadMore() {
-        compositeDisposable.add(moviesManager.loadMoreMovies()
-                .startWith(UpcomingMoviesStatus.InProgress())
-                .subscribeOn(Schedulers.io())
+    fun loadMore(loadMoreRequest: Observable<Boolean>) {
+        compositeDisposable.add(loadMoreRequest.flatMap {
+                moviesManager.loadMoreMovies()
+                        .startWith(UpcomingMoviesStatus.InProgress())
+            }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { upcomingMovieStatus ->
                     moviesListLiveData.value = moviesListLiveData.value?.let { currentState ->
                         when(upcomingMovieStatus) {
                             is UpcomingMoviesStatus.Success ->
                                 currentState.copy(
-                                        movies = currentState.movies.union(upcomingMovieStatus.movies.map { return@map it.toModel() }).toList(),
+                                        movies = appendMoviesToState(currentState, upcomingMovieStatus),
                                         loadingMore = false,
                                         errorMessage = ""
                                 )
@@ -77,7 +80,12 @@ class MoviesListViewModel : ViewModel() {
                                 )
                         }
                     }
-                })
+                }
+        )
+    }
+
+    private fun appendMoviesToState(currentState: MoviesListUiState, upcomingMovieStatus: UpcomingMoviesStatus.Success): List<Movie> {
+       return currentState.movies.union(upcomingMovieStatus.movies).toList()
     }
 
     override fun onCleared() {

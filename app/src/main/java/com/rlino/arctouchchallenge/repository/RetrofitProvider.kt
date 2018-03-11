@@ -1,6 +1,7 @@
 package com.rlino.arctouchchallenge.repository
 
 
+import com.rlino.arctouchchallenge.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,13 +15,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitProvider {
 
     val instance: Retrofit by lazy {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
         val httpClient = getClient()
-        httpClient.addInterceptor(logging)
+
+        if(BuildConfig.DEBUG) {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+            httpClient.addInterceptor(logging)
+        }
 
         Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
+                .baseUrl(BuildConfig.BASE_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
@@ -34,7 +38,7 @@ object RetrofitProvider {
             val originalHttpUrl = original.url()
 
             val url = originalHttpUrl.newBuilder()
-                    .addQueryParameter("api_key", "1f54bd990f1cdfb230adb312546d765d")
+                    .addQueryParameter("api_key", BuildConfig.API_KEY)
                     .build()
 
             // Request customization: add request headers
