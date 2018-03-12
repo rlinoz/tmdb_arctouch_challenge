@@ -1,7 +1,9 @@
 package com.rlino.arctouchchallenge.ui.extesions
 
 import android.content.Context
+import android.support.annotation.ColorRes
 import android.support.annotation.LayoutRes
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +31,9 @@ fun Context.toast(message: CharSequence) =
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
 fun Date.toFormattedString(): String {
-    val sdf = SimpleDateFormat("dd/MM/yyyy")
+    val sdf = SimpleDateFormat.getDateInstance()
     return sdf.format(this)
 }
+
+fun Context.getColorCompat(@ColorRes res: Int) =
+        ContextCompat.getColor(this, res)

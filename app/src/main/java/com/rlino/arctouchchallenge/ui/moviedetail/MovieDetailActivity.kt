@@ -7,7 +7,9 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
 import android.view.MenuItem
+import com.rlino.arctouchchallenge.BuildConfig
 import com.rlino.arctouchchallenge.R
+import com.rlino.arctouchchallenge.ui.extesions.getColorCompat
 import com.rlino.arctouchchallenge.ui.extesions.loadUrl
 import com.rlino.arctouchchallenge.ui.extesions.toFormattedString
 import com.rlino.arctouchchallenge.ui.model.Movie
@@ -40,7 +42,7 @@ class MovieDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         collapsingToolbar.title = movie.title
-        collapsingToolbar.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent))
+        collapsingToolbar.setExpandedTitleColor(getColorCompat(android.R.color.transparent))
 
         render()
     }
@@ -54,8 +56,8 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun applyPalette(palette: Palette) {
-        val primaryDark = ContextCompat.getColor(this, R.color.colorPrimaryDark)
-        val primary = ContextCompat.getColor(this, R.color.colorPrimary)
+        val primaryDark = getColorCompat(R.color.colorPrimaryDark)
+        val primary = getColorCompat(R.color.colorPrimary)
         collapsingToolbar.setContentScrimColor(palette.getMutedColor(primary))
         collapsingToolbar.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark))
         supportStartPostponedEnterTransition()
@@ -65,8 +67,8 @@ class MovieDetailActivity : AppCompatActivity() {
         name.text = movie.title
         genre.text = movie.getGenreNames()
         releaseDate.text = movie.releaseDate.toFormattedString()
-        image.loadUrl("https://image.tmdb.org/t/p/w92/${movie.posterPath}")
-        movieBackDrop.loadUrl("https://image.tmdb.org/t/p/w780/${movie.backDropPath}", object: Callback {
+        image.loadUrl("${BuildConfig.BASE_IMAGE_URL}w92/${movie.posterPath}")
+        movieBackDrop.loadUrl("${BuildConfig.BASE_IMAGE_URL}w780/${movie.backDropPath}", object: Callback {
             override fun onSuccess() {
                 val bitmap = (image.drawable as BitmapDrawable).bitmap
                 Palette.from(bitmap).generate(this@MovieDetailActivity::applyPalette)

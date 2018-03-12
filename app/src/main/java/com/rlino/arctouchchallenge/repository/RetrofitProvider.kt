@@ -41,7 +41,6 @@ object RetrofitProvider {
                     .addQueryParameter("api_key", BuildConfig.API_KEY)
                     .build()
 
-            // Request customization: add request headers
             val requestBuilder = original.newBuilder()
                     .url(url)
 
